@@ -1,0 +1,10 @@
+{
+  "components": [
+    {"key":"approved","label":"Approve this request?","type":"checkbox","values":[{"label":"Approved","value":true}]},
+    {"key":"managerComment","label":"Manager comment","type":"textarea"}
+  ],
+  "type":"default",
+  "id":"leave-approval",
+  "executionPlatform":"Camunda Cloud",
+  "executionPlatformVersion":"8.8.0"
+}

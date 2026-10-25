@@ -1,0 +1,67 @@
+
+services:
+  zeebe:
+    image: camunda/zeebe:8.8.9
+    container_name: leave-zeebe
+    ports:
+      - "26500:26500"
+      - "9600:9600"
+      - "8080:8080"
+    environment:
+      ZEEBE_BROKER_GATEWAY_ENABLE: "true"
+      CAMUNDA_DATA_SECONDARY_STORAGE_ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI: "true"
+    depends_on:
+      - elasticsearch
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/26500'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  operate:
+    image: camunda/operate:8.8.9
+    container_name: leave-operate
+    depends_on:
+      - zeebe
+      - elasticsearch
+    ports:
+      - "8082:8080"
+    environment:
+      CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS: "zeebe:26500"
+      CAMUNDA_OPERATE_ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      CAMUNDA_DATA_SECONDARY_STORAGE_ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      SPRING_PROFILES_ACTIVE: "dev"
+    restart: unless-stopped
+
+  tasklist:
+    image: camunda/tasklist:8.8.9
+    container_name: leave-tasklist
+    depends_on:
+      - zeebe
+      - elasticsearch
+    ports:
+      - "8083:8080"
+    environment:
+      CAMUNDA_TASKLIST_ZEEBE_GATEWAYADDRESS: "zeebe:26500"
+      CAMUNDA_TASKLIST_ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      CAMUNDA_DATA_SECONDARY_STORAGE_ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      SPRING_PROFILES_ACTIVE: "dev"
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.3
+    container_name: leave-elasticsearch
+    environment:
+      discovery.type: "single-node"
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+volumes:
+  esdata:
