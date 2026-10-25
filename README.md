@@ -1,37 +1,45 @@
 # Leave Application System
 
-Full-stack student project based on the supplied assignment guides: Camunda 8 BPMN workflow, React + TypeScript frontend, Spring Boot REST backend, H2 database, and Docker Compose.
+A web-based Leave Application System that allows employees to apply for leave and track requests while managers approve or reject applications.
 
 ## Features
-- Employee submits leave request (Annual, Sick, Unpaid)
-- My Requests view and annual leave balance
-- Manager inbox with approve/reject and comment
-- BPMN workflow with validation and finalisation workers
-- H2 persistence for local development
-- Camunda Operate/Tasklist and REST/gRPC ports documented in the compose setup
+- Submit leave applications
+- View personal leave requests and their status
+- Manager inbox for pending approvals
+- Approve or reject leave requests with optional comments
+- Track annual leave balance
+- Camunda workflow integration
 
-## Important
-This is a coursework starter implementation. You must run it locally and verify it before submission. Camunda 8 images and Spring Boot starter APIs can change between releases; if your environment uses a different Camunda minor version, align the starter version and Docker images. Do not claim the application was tested unless you run the checks below.
-
-## Requirements
-- Java 21
-- Maven 3.9+
-- Node.js 20+
-- Docker Desktop with Compose
+## Technologies
+- React, TypeScript, Vite
+- Java and Spring Boot
+- H2 Database
+- Camunda 8, Zeebe, Operate, and Tasklist
+- Docker Compose
 
 ## Run locally
-1. Start Camunda stack: `docker compose up -d` from the repository root. Wait until containers are healthy.
-2. In terminal 1: `cd backend && mvn spring-boot:run`
-3. In terminal 2: `cd frontend && npm install && npm run dev`
-4. Open http://localhost:5173
 
-Spring Boot API: http://localhost:8081  
-Camunda REST: http://localhost:8080  
-Camunda gRPC: localhost:26500  
-H2 console: http://localhost:8081/h2-console (JDBC URL `jdbc:h2:file:./data/leavedb`, user `sa`, blank password)
+Start Docker Desktop, then open a terminal in the project folder:
 
-## GitHub submission
-Create a new GitHub repository, extract this ZIP, put the contents (the `README.md`, `backend`, `frontend`, `camunda`, and `docker-compose.yml`) in the repository root, commit and push. Copy the repository URL into Classroom.
+```bash
+docker compose up -d
+```
 
-## Workflow
-The BPMN process ID is `leave-request`. Service task job types are `validate-leave` and `finalize-leave`. The manager task uses form key `leave-approval`.
+Start the backend in a separate terminal:
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+Start the frontend in another terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the local URL shown by Vite, usually http://localhost:5173/.
+
+Keep Docker and both application terminals running while testing.
